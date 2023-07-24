@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="post">
+    <h2>{{ post.title }}</h2>
+    <p>{{ post.created_date }}</p>
+    {% if post.cover_filename %}
+        <figure><img src="{{ url_for('static', filename='media/' + post.cover_filename) }}" alt="#"/></figure>
+    {% else %}
+        <figure><img src="{{ url_for('static', filename='images/blog1.jpg') }}" alt="#"/></figure> {# Здесь можно указать путь к дефолтному изображению, которое будет показываться, если у поста нет обложки #}
+    {% endif %}
+    <p>{{ post.content }}</p>
+    <p><a href="http://127.0.0.1:5000/profile/{{ post.author_id }}">{{ post.author.username }}</a></p>
+    <a href="http://127.0.0.1:5000/{{ post.id }}/update">Update</a>
+    <a href="http://127.0.0.1:5000/{{ post.id }}/delete">Delete</a>
+</div>
+{% endblock %}

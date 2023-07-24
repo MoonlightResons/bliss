@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Latest Posts</h1>
+    {% for post in posts %}
+        <div class="col-md-4">
+            <div class="latest">
+                {% if post.cover_filename %}
+                    <figure><img src="{{ url_for('static', filename='media/' + post.cover_filename) }}" alt="Cover"/></figure>
+                {% else %}
+                    <!-- Заглушка, если у поста нет обложки -->
+                    <figure><img src="{{ url_for('static', filename='images/blog1.jpg') }}" alt="Cover"/></figure>
+                {% endif %}
+                <span>{{ post.created_date }}</span>
+                <div class="nostrud">
+                    <h3><a href="{{ url_for('get_post', id=post.id) }}">{{ post.title }}</a></h3>
+                    <p>{{ post.content }}</p>
+                    <p><a href="{{ url_for('profile', user_id=post.author_id) }}">{{ post.author.username }}</a></p>
+                    <a class="read_more" href="{{ url_for('get_post', id=post.id) }}">Read More</a>
+                    <p>Likes: {{ post.likes.count() }}</p>
+                    {% if current_user.is_authenticated %}
+                        {% set is_liked = likes.where(Like.user == current_user, Like.post == post).exists() %}
+                        {% if not is_liked %}
+                            <form action="{{ url_for('like_post', post_id=post.id) }}" method="post">
+                                <button type="submit">Like</button>
+                            </form>
+                        {% else %}
+                            <form action="{{ url_for('unlike_post', post_id=post.id) }}" method="post">
+                                <button type="submit">Unlike</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+{% for post in posts %}
+    <!-- Остальной код шаблона -->
+    {% if current_user.is_authenticated %}
+        {% set is_liked = likes.where(Like.user == current_user, Like.post == post).exists() %}
+        {% if not is_liked %}
+            <form action="{{ url_for('like_post', post_id=post.id) }}" method="post">
+                <button type="submit">Like</button>
+            </form>
+        {% else %}
+            <form action="{{ url_for('unlike_post', post_id=post.id) }}" method="post">
+                <button type="submit">Unlike</button>
+            </form>
+        {% endif %}
+    {% endif %}
+{% endfor %}
