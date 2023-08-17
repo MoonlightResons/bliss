@@ -257,7 +257,7 @@ def unlike_post(post_id):
         like = Like.get_or_none(Like.user == current_user, Like.post == post)
         if like:
             like.delete_instance()
-    return redirect('/') 
+    return redirect('/b') 
 
 
 
